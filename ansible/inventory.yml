@@ -1,0 +1,10 @@
+all:
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  children:
+    monitor:
+      hosts:
+        54.94.26.239
+    others:
+      hosts:
+        18.231.188.42:

@@ -1,0 +1,185 @@
+---
+# tasks file for roles/grafana
+
+- name: Instalando gpg
+  apt:
+    name: gnupg,software-properties-common
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Adicionando gpg key
+  apt_key:
+    url: "https://packages.grafana.com/gpg.key"
+    validate_certs: no
+
+- name: Adicionando Repo
+  apt_repository:
+    repo: "deb https://packages.grafana.com/oss/deb stable main"             
+    state: present
+    validate_certs: no
+
+- name: Instalando grafana
+  apt:
+    name: grafana
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Start do serviço grafana-server
+  systemd:
+    name: grafana-server
+    state: started
+    enabled: yes
+
+- name: Aguardando o serviço ficar up
+  uri:
+    url: "http://127.0.0.1:3000"
+    status_code: 200
+  register: __result
+  until: __result.status == 200
+  retries: 120
+  delay: 1
+
+- name: Modificando senha do admin
+  shell : "grafana-cli admin reset-admin-password {{ grafana_admin_password }}"
+  register: __command_admin
+  changed_when: __command_admin.rc !=0
+
+- name: Modificando usuário admin
+  lineinfile:
+    path: /etc/grafana/grafana.ini
+    regexp: "{{ item.before }}"
+    line: "{{ item.after }}"
+  with_items:
+  - { before: "^;admin_user = admin", after: "admin_user = {{ grafana_admin_user }}"}
+  - { before: "^;admin_password = admin", after: "admin_password = {{ grafana_admin_password }}"}
+
+#- name: add prometheus datasource
+#  grafana_datasource:
+#    name: "prometheus-local"
+#    grafana_url: "http://127.0.0.1:3000"
+#    grafana_user: "{{ grafana_admin_user }}"
+#    grafana_password: "{{ grafana_admin_password }}"
+#    org_id: "1"
+#    ds_type: "prometheus"
+#    ds_url: "http://127.0.0.1:9090"
+#  changed_when: false
+
+- name: Instalando Node Dashboard - 01
+  get_url:
+    url: https://raw.githubusercontent.com/leandro-matos/4linux-desafio/main/grafana-dashboards/node-exporter/node-dashboard_rev2.json
+    dest: /var/lib/grafana/node-exporter-01.json
+    mode: '0755'
+
+- name: Instalando Node Exporter - 02
+  get_url:
+    url: https://raw.githubusercontent.com/leandro-matos/4linux-desafio/main/grafana-dashboards/node-exporter/node-exporter-for-prometheus-dashboard-en-v20201010_rev9.json
+    dest: /var/lib/grafana/node-exporter-02.json
+    mode: '0755'
+
+- name: Instalando Node Exporter for Prometheus Dashboard - 03
+  get_url:
+    url: https://raw.githubusercontent.com/leandro-matos/4linux-desafio/main/grafana-dashboards/node-exporter/node-exporter-full_rev23.json
+    dest: /var/lib/grafana/node-exporter-03.json
+    mode: '0755'
+    
+- name: Instalando Node Exporter Full - 04
+  get_url:
+    url: https://raw.githubusercontent.com/leandro-matos/4linux-desafio/main/grafana-dashboards/node-exporter/node-exporter-server-metrics_rev8.json
+    dest: /var/lib/grafana/node-exporter-04.json
+    mode: '0755'
+    
+- name: Instalando node exporter dashboard - 05
+  get_url:
+    url: https://raw.githubusercontent.com/leandro-matos/4linux-desafio/main/grafana-dashboards/node-exporter/node-exporter_rev2.json
+    dest: /var/lib/grafana/node-exporter-05.json
+    mode: '0755'
+
+### Configurando Dashboards prontos para o Grafana
+- name: Ativando Dashboard - 01
+  template:
+    src: dashboard-node-exporter-01.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/dashboard-node-exporter-01.yml
+    mode: 0755
+  notify: restart_grafana
+
+- name: Ativando Dashboard - 02
+  template:
+    src: dashboard-node-exporter-02.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/dashboard-node-exporter-02.yml
+    mode: 0755
+  notify: restart_grafana
+  
+- name: Ativando Dashboard - 03
+  template:
+    src: dashboard-node-exporter-03.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/dashboard-node-exporter-03.yml
+    mode: 0755
+  notify: restart_grafana
+
+- name: Ativando Dashboard - 04
+  template:
+    src: dashboard-node-exporter-04.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/dashboard-node-exporter-04.yml
+    mode: 0755
+  notify: restart_grafana
+
+- name: Ativando Dashboard - 05
+  template:
+    src: dashboard-node-exporter-05.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/dashboard-node-exporter-05.yml
+    mode: 0755
+  notify: restart_grafana
+ 
+- name: Instalando Docker Dashboard - 01
+  get_url:
+    url: https://raw.githubusercontent.com/leandro-matos/4linux-desafio/main/grafana-dashboards/cadvisor/container-in-docker-and-system-monitoring_rev1.json
+    dest: /var/lib/grafana/docker-cadvisor-01.json
+    mode: '0755'
+    
+- name: Instalando Docker Dashboard - 02
+  get_url:
+    url: https://raw.githubusercontent.com/leandro-matos/4linux-desafio/main/grafana-dashboards/cadvisor/docker-and-os-metrics_rev1.json
+    dest: /var/lib/grafana/docker-cadvisor-02.json
+    mode: '0755'
+
+- name: Instalando Docker Dashboard - 03
+  get_url:
+    url: https://raw.githubusercontent.com/leandro-matos/4linux-desafio/main/grafana-dashboards/cadvisor/docker-and-system-monitoring_rev1.json
+    dest: /var/lib/grafana/docker-cadvisor-03.json
+    mode: '0755'
+ 
+- name: Instalando Docker Dashboard - 04
+  get_url:
+    url: https://raw.githubusercontent.com/leandro-matos/4linux-desafio/main/grafana-dashboards/cadvisor/docker-container_rev1.json
+    dest: /var/lib/grafana/docker-cadvisor-04.json
+    mode: '0755'
+    
+- name: Ativando Dashboard - 01
+  template:
+    src: dashboard-docker-cadvisor-01.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/dashboard-docker-cadvisor-01.yml
+    mode: 0755
+  notify: restart_grafana
+
+- name: Ativando Dashboard - 02
+  template:
+    src: dashboard-docker-cadvisor-02.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/dashboard-docker-cadvisor-02.yml
+    mode: 0755
+  notify: restart_grafana
+  
+- name: Ativando Dashboard - 03
+  template:
+    src: dashboard-docker-cadvisor-03.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/dashboard-docker-cadvisor-03.yml
+    mode: 0755
+  notify: restart_grafana
+
+- name: Ativando Dashboard - 04
+  template:
+    src: dashboard-docker-cadvisor-04.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/dashboard-docker-cadvisor-04.yml
+    mode: 0755
+  notify: restart_grafana
