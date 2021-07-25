@@ -4,7 +4,7 @@ all:
   children:
     monitor:
       hosts:
-        54.94.26.239
+        35.239.202.143
     others:
       hosts:
-        18.231.188.42:
+        35.222.63.47:

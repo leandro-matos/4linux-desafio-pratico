@@ -23,4 +23,4 @@ prometheus_var_config:
       scrape_interval: 5m
       static_configs:
         - targets: 
-            - 18.231.188.42:8080
+            - 35.222.63.47:8080
