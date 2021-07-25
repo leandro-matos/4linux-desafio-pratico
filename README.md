@@ -97,5 +97,7 @@ Implementação de camada de alertas para o monitoramento eficiente tais como Al
 
 Incluir automaticamente o DataSource do Prometheus; houve há erro na execução da etapa do Playbook no SO Debian, portanto é necessário adicionar manualmente o Datasource do Prometheus. Esse mesmo comportamento não foi apresentado em um servidor Ubuntu, dessa forma deixei comentado entre as linhas 57 e 68 no arquivo `main.yml` na roles do Grafana.
 
-Instrumentação das aplicações para que as mesmas disponham de métricas para coleta do Prometheus, não tive tempo suficiente para estudar as métricas e conseguir alterar dentro da aplicação. A documentação mostra alguns exemplos de como efetuar esses passos: https://prometheus.io/docs/instrumenting/clientlibs/. Nesse caso há exemplos em Python e Node, expondo essas métricas, é possível depois montar Dashboards mais eficientes com detalhes do fluxo da aplicação, outra situação que podeseria ser interessante para esse cenário e a utilização do ElasticStack e seus recursos de APM.
+Instrumentação das aplicações para que as mesmas disponham de métricas para coleta do Prometheus, não tive tempo suficiente para estudar as métricas e conseguir alterar dentro da aplicação. A documentação mostra alguns exemplos de como efetuar esses passos: https://prometheus.io/docs/instrumenting/clientlibs/. 
+
+Nesse caso há exemplos em Python e Node, expondo essas métricas, é possível depois montar Dashboards mais eficientes com detalhes do fluxo da aplicação, outra situação que podeseria ser interessante para esse cenário e a utilização do ElasticStack e seus recursos de APM.
 
