@@ -83,8 +83,9 @@ sudo docker run \
   google/cadvisor:latest
 ```
 
-Sendo assim, para validar o seu funcionamento, acesse a seguinte URL no navegador: 
+A última etapa é incluir o Prometheus como Datasource no painel de administração do Grafana. Após o primeiro login, na tela inicial, basta procurar o data source Prometheus e clicar em Select, dessa forma ele ficará habilitado, basta inserir a URL do Prometheus `127.0.0.1:9090` e clicar no Save & Test, o retorno deve ser Data Source is working:
 
+Links de Acesso:
 - [x] Prometheus: **http://35.239.202.143:9090/**
 - [x] NodeExporter Metrics: **http://35.239.202.143:9100/metrics**
 - [x] Grafana (user: admin, senha: 4linux): **http://35.239.202.143:3000**
@@ -92,9 +93,9 @@ Sendo assim, para validar o seu funcionamento, acesse a seguinte URL no navegado
 
 
 #### Implementações e melhorias no projeto:
-- Implementação de camada de alertas para o monitoramento eficiente tais como AlertManager e possíveis integrações com (Slack, RocketChat, etc)
+Implementação de camada de alertas para o monitoramento eficiente tais como AlertManager e possíveis integrações com (Slack, RocketChat, etc)
 
-- Incluir automaticamente o DataSource do Prometheus; houve há erro na execução da etapa do Playbook no SO Debian, portanto é necessário adicionar manualmente o Datasource do Prometheus. Esse mesmo comportamento não foi apresentado em um servidor Ubuntu, dessa forma deixei comentado entre as linhas 57 e 68 no arquivo `main.yml` na roles do Grafana.
+Incluir automaticamente o DataSource do Prometheus; houve há erro na execução da etapa do Playbook no SO Debian, portanto é necessário adicionar manualmente o Datasource do Prometheus. Esse mesmo comportamento não foi apresentado em um servidor Ubuntu, dessa forma deixei comentado entre as linhas 57 e 68 no arquivo `main.yml` na roles do Grafana.
 
-- Instrumentação das aplicações para que as mesmas disponham de métricas para coleta do Prometheus, não tive tempo suficiente para estudar as métricas e conseguir alterar dentro da aplicação. A documentação mostra alguns exemplos de como efetuar esses passos: https://prometheus.io/docs/instrumenting/clientlibs/. Penso que também seria interessante capturar as informações do Rabbitmq e do Mysql, validei que há dois exporter's prontos para coleta dessas informações: rabbitmq_exporter e mysqld_exporter
+Instrumentação das aplicações para que as mesmas disponham de métricas para coleta do Prometheus, não tive tempo suficiente para estudar as métricas e conseguir alterar dentro da aplicação. A documentação mostra alguns exemplos de como efetuar esses passos: https://prometheus.io/docs/instrumenting/clientlibs/. Nesse caso há exemplos em Python e Node, expondo essas métricas, é possível depois montar Dashboards mais eficientes com detalhes do fluxo da aplicação, outra situação que podeseria ser interessante para esse cenário e a utilização do ElasticStack e seus recursos de APM.
 
