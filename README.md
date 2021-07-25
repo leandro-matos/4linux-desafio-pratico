@@ -5,7 +5,7 @@ O Prometheus é um sistema completo de monitoramento para serviços e aplicaçõ
 
 Arquitetura da Solução
 
-![](images/4linux.jpeg)
+![](images/4linux.jpg)
 
 A arquitetura do sistema é bem simples, dentro das duas máquinas na GCP serão instalados dois Node Exporters, além disso será instalado no servidor da aplicação do Cadvisor, ferramenta responsável por coletar métricas dos containers em execução, com isso teremos a métricas suficientes para monitorar o ambiente. Passando para o Prometheus iremos coletar essas métricas e disponibilizar para o Grafana; já foi incluso no mesmo por meio do Ansible alguns Dashboards customizados afim de ganhar tempo e poupar execuções manuais.
 
