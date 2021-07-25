@@ -91,3 +91,10 @@ Sendo assim, para validar o seu funcionamento, acesse a seguinte URL no navegado
 - [x] Cadvisor: **http://35.222.63.47:8080/**
 
 
+#### Implementações e melhorias no projeto:
+- Implementação de camada de alertas para o monitoramento eficiente tais como AlertManager e possíveis integrações com (Slack, RocketChat, etc)
+
+- Incluir automaticamente o DataSource do Prometheus; houve há erro na execução da etapa do Playbook no SO Debian, portanto é necessário adicionar manualmente o Datasource do Prometheus. Esse mesmo comportamento não foi apresentado em um servidor Ubuntu, dessa forma deixei comentado entre as linhas 57 e 68 no arquivo `main.yml` na roles do Grafana.
+
+- Instrumentação das aplicações para que as mesmas disponham de métricas para coleta do Prometheus, não tive tempo suficiente para estudar as métricas e conseguir alterar dentro da aplicação. A documentação mostra alguns exemplos de como efetuar esses passos: https://prometheus.io/docs/instrumenting/clientlibs/. Penso que também seria interessante capturar as informações do Rabbitmq e do Mysql, validei que há dois exporter's prontos para coleta dessas informações: rabbitmq_exporter e mysqld_exporter
+
